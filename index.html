@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Điều Khiển Thiết Bị ESP-01S</title>
+  <title>Điều Khiển & Hẹn Giờ ESP-01S</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -26,22 +26,19 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 24px 16px;
     }
     .card {
       background-color: var(--card);
       border-radius: 24px;
-      padding: 32px 24px;
+      padding: 28px 20px;
       width: 100%;
-      max-width: 380px;
+      max-width: 400px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .header {
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .badge {
       display: inline-flex;
@@ -62,28 +59,26 @@
       background-color: var(--accent);
     }
     h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      letter-spacing: -0.5px;
+      margin-bottom: 20px;
     }
     .status-panel {
-      margin: 28px 0;
-      padding: 20px;
+      margin-bottom: 20px;
+      padding: 16px;
       background: rgba(15, 23, 42, 0.6);
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .status-label {
-      font-size: 14px;
+      font-size: 13px;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
     .status-value {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 800;
-      transition: color 0.3s ease;
     }
     .status-on {
       color: var(--on-color);
@@ -96,48 +91,74 @@
     .buttons-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 10px;
+      gap: 14px;
+      margin-bottom: 24px;
     }
     button {
       border: none;
-      border-radius: 16px;
-      padding: 18px 0;
-      font-size: 17px;
+      border-radius: 14px;
+      padding: 16px 0;
+      font-size: 16px;
       font-weight: 700;
       color: white;
       cursor: pointer;
       transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
     }
-    button:active {
-      transform: scale(0.96);
-    }
+    button:active { transform: scale(0.97); }
     .btn-on {
       background: linear-gradient(135deg, #22c55e, #16a34a);
-      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
-    }
-    .btn-on:hover {
-      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.45);
+      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3);
     }
     .btn-off {
       background: linear-gradient(135deg, #ef4444, #dc2626);
-      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
     }
-    .btn-off:hover {
-      box-shadow: 0 10px 24px rgba(239, 68, 68, 0.45);
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 18px 0 12px;
+      text-align: left;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 16px;
     }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
+    .schedule-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .schedule-label {
+      font-size: 14px;
+      font-weight: 500;
+      width: 90px;
+      text-align: left;
+    }
+    input[type="time"] {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      color: #fff;
+      padding: 8px 10px;
+      font-size: 15px;
+      outline: none;
+      flex-grow: 1;
+    }
+    .btn-timer {
+      background: #2563eb;
+      padding: 9px 14px;
+      font-size: 13px;
+      border-radius: 10px;
+    }
+    .btn-cancel {
+      background: #475569;
+      padding: 9px 10px;
+      font-size: 13px;
+      border-radius: 10px;
     }
     .footer-log {
-      margin-top: 20px;
+      margin-top: 16px;
       font-size: 13px;
       color: var(--text-muted);
       min-height: 18px;
@@ -147,60 +168,108 @@
 <body>
 
   <div class="card">
-    <div class="header">
-      <div class="badge">
-        <span class="dot"></span> Blynk API • ESP8266-01S
-      </div>
-      <h1>Bảng Điều Khiển</h1>
+    <div class="badge">
+      <span class="dot"></span> Smart Schedule • ESP-01S
     </div>
+    <h1>Bảng Điều Khiển & Hẹn Giờ</h1>
 
     <div class="status-panel">
       <div class="status-label">Trạng thái rơ-le (GPIO0)</div>
-      <div id="statusText" class="status-value status-off">ĐANG KIỂM TRA...</div>
+      <div id="statusText" class="status-value status-off">SẴN SÀNG</div>
     </div>
 
     <div class="buttons-grid">
-      <button id="btnOn" class="btn-on" onclick="sendControl(0)">
-        <span>BẬT</span>
-      </button>
-      <button id="btnOff" class="btn-off" onclick="sendControl(1)">
-        <span>TẮT</span>
-      </button>
+      <button class="btn-on" onclick="sendRelay(0)">BẬT</button>
+      <button class="btn-off" onclick="sendRelay(1)">TẮT</button>
     </div>
 
-    <div class="footer-log" id="logMsg">Đang đồng bộ trạng thái...</div>
+    <div class="section-title">⏱ HẸN GIỜ TỰ ĐỘNG (LƯU VÀO ESP)</div>
+
+    <!-- Hàng hẹn giờ bật -->
+    <div class="schedule-row">
+      <span class="schedule-label" style="color: var(--on-color);">Giờ BẬT:</span>
+      <input type="time" id="timeOn">
+      <button class="btn-timer" onclick="saveTimer('ON')">Lưu</button>
+      <button class="btn-cancel" onclick="cancelTimer('ON')">Hủy</button>
+    </div>
+
+    <!-- Hàng hẹn giờ tắt -->
+    <div class="schedule-row">
+      <span class="schedule-label" style="color: var(--off-color);">Giờ TẮT:</span>
+      <input type="time" id="timeOff">
+      <button class="btn-timer" onclick="saveTimer('OFF')">Lưu</button>
+      <button class="btn-cancel" onclick="cancelTimer('OFF')">Hủy</button>
+    </div>
+
+    <div class="footer-log" id="logMsg">Chạm nút để thao tác</div>
   </div>
 
   <script>
-    const BLYNK_TOKEN = "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT";
-const PIN = "V0";
-const BASE_URL = "https://sgp1.blynk.cloud/external/api";
+    const TOKEN = "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT";
+    const BASE_URL = "https://sgp1.blynk.cloud/external/api";
 
-const statusEl = document.getElementById("statusText");
-const logEl = document.getElementById("logMsg");
-const btnOn = document.getElementById("btnOn");
-const btnOff = document.getElementById("btnOff");
+    const statusEl = document.getElementById("statusText");
+    const logEl = document.getElementById("logMsg");
 
-function sendControl(val) {
-  const isTurnOn = (val === 0);
-  logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
-  
-  // Dùng cơ chế gọi ngầm không bị chặn CORS
-  const ping = new Image();
-  ping.src = `${BASE_URL}/update?token=${BLYNK_TOKEN}&${PIN}=${val}&t=${new Date().getTime()}`;
-  
-  ping.onload = ping.onerror = function() {
-    if (isTurnOn) {
-      statusEl.textContent = "ĐANG BẬT";
-      statusEl.className = "status-value status-on";
-      logEl.textContent = "Đã BẬT thành công!";
-    } else {
-      statusEl.textContent = "ĐANG TẮT";
-      statusEl.className = "status-value status-off";
-      logEl.textContent = "Đã TẮT thành công!";
+    function ping(url, callback) {
+      const img = new Image();
+      img.src = `${url}&t=${Date.now()}`;
+      img.onload = img.onerror = function() {
+        if (callback) callback();
+      };
     }
-  };
-}
+
+    function sendRelay(val) {
+      const isTurnOn = (val === 0);
+      logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
+      ping(`${BASE_URL}/update?token=${TOKEN}&V0=${val}`, function() {
+        if (isTurnOn) {
+          statusEl.textContent = "ĐANG BẬT";
+          statusEl.className = "status-value status-on";
+          logEl.textContent = "Đã BẬT thành công!";
+        } else {
+          statusEl.textContent = "ĐANG TẮT";
+          statusEl.className = "status-value status-off";
+          logEl.textContent = "Đã TẮT thành công!";
+        }
+      });
+    }
+
+    function saveTimer(type) {
+      if (type === 'ON') {
+        const val = document.getElementById('timeOn').value;
+        if (!val) { alert("Vui lòng chọn giờ bật!"); return; }
+        const [h, m] = val.split(':');
+        logEl.textContent = `Đang lưu hẹn giờ BẬT lúc ${val}...`;
+        ping(`${BASE_URL}/update?token=${TOKEN}&V1=${parseInt(h)}&V2=${parseInt(m)}`, function() {
+          logEl.textContent = `Đã cài hẹn giờ BẬT: ${val}`;
+        });
+      } else {
+        const val = document.getElementById('timeOff').value;
+        if (!val) { alert("Vui lòng chọn giờ tắt!"); return; }
+        const [h, m] = val.split(':');
+        logEl.textContent = `Đang lưu hẹn giờ TẮT lúc ${val}...`;
+        ping(`${BASE_URL}/update?token=${TOKEN}&V3=${parseInt(h)}&V4=${parseInt(m)}`, function() {
+          logEl.textContent = `Đã cài hẹn giờ TẮT: ${val}`;
+        });
+      }
+    }
+
+    function cancelTimer(type) {
+      if (type === 'ON') {
+        document.getElementById('timeOn').value = '';
+        logEl.textContent = "Đang hủy hẹn giờ BẬT...";
+        ping(`${BASE_URL}/update?token=${TOKEN}&V1=-1&V2=-1`, function() {
+          logEl.textContent = "Đã hủy hẹn giờ BẬT!";
+        });
+      } else {
+        document.getElementById('timeOff').value = '';
+        logEl.textContent = "Đang hủy hẹn giờ TẮT...";
+        ping(`${BASE_URL}/update?token=${TOKEN}&V3=-1&V4=-1`, function() {
+          logEl.textContent = "Đã hủy hẹn giờ TẮT!";
+        });
+      }
+    }
   </script>
 </body>
 </html>
