@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Điều Khiển Thiết Bị ESP-01S</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --on-color: #22c55e;
+      --off-color: #ef4444;
+      --accent: #38bdf8;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background-color: var(--card);
+      border-radius: 24px;
+      padding: 32px 24px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .header {
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent);
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .status-panel {
+      margin: 28px 0;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .status-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .status-value {
+      font-size: 22px;
+      font-weight: 800;
+      transition: color 0.3s ease;
+    }
+    .status-on {
+      color: var(--on-color);
+      text-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
+    }
+    .status-off {
+      color: var(--off-color);
+      text-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+    }
+    .buttons-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    button {
+      border: none;
+      border-radius: 16px;
+      padding: 18px 0;
+      font-size: 17px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    button:active {
+      transform: scale(0.96);
+    }
+    .btn-on {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+    }
+    .btn-on:hover {
+      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.45);
+    }
+    .btn-off {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    }
+    .btn-off:hover {
+      box-shadow: 0 10px 24px rgba(239, 68, 68, 0.45);
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .footer-log {
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="header">
+      <div class="badge">
+        <span class="dot"></span> Blynk API • ESP8266-01S
+      </div>
+      <h1>Bảng Điều Khiển</h1>
+    </div>
+
+    <div class="status-panel">
+      <div class="status-label">Trạng thái rơ-le (GPIO0)</div>
+      <div id="statusText" class="status-value status-off">ĐANG KIỂM TRA...</div>
+    </div>
+
+    <div class="buttons-grid">
+      <button id="btnOn" class="btn-on" onclick="sendControl(0)">
+        <span>BẬT</span>
+      </button>
+      <button id="btnOff" class="btn-off" onclick="sendControl(1)">
+        <span>TẮT</span>
+      </button>
+    </div>
+
+    <div class="footer-log" id="logMsg">Đang đồng bộ trạng thái...</div>
+  </div>
+
+  <script>
+    const BLYNK_TOKEN = "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT";
+const PIN = "V0";
+const BASE_URL = "https://sgp1.blynk.cloud/external/api";
+
+const statusEl = document.getElementById("statusText");
+const logEl = document.getElementById("logMsg");
+const btnOn = document.getElementById("btnOn");
+const btnOff = document.getElementById("btnOff");
+
+function sendControl(val) {
+  const isTurnOn = (val === 0);
+  logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
+  
+  // Dùng cơ chế gọi ngầm không bị chặn CORS
+  const ping = new Image();
+  ping.src = `${BASE_URL}/update?token=${BLYNK_TOKEN}&${PIN}=${val}&t=${new Date().getTime()}`;
+  
+  ping.onload = ping.onerror = function() {
+    if (isTurnOn) {
+      statusEl.textContent = "ĐANG BẬT";
+      statusEl.className = "status-value status-on";
+      logEl.textContent = "Đã BẬT thành công!";
+    } else {
+      statusEl.textContent = "ĐANG TẮT";
+      statusEl.className = "status-value status-off";
+      logEl.textContent = "Đã TẮT thành công!";
+    }
+  };
+}
+  </script>
+</body>
+</html>
