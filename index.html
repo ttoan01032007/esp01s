@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Điều Khiển & Hẹn Giờ ESP-01S</title>
+  <title>Bảng Điều Khiển & Hẹn Giờ ESP-01S</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -18,7 +18,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     body {
       background-color: var(--bg);
@@ -38,7 +38,6 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 20px;
     }
     .badge {
       display: inline-flex;
@@ -114,7 +113,7 @@
       box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
     }
     .section-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       color: var(--accent);
       margin: 18px 0 12px;
@@ -126,13 +125,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 12px;
     }
     .schedule-label {
       font-size: 14px;
-      font-weight: 500;
-      width: 90px;
+      font-weight: 600;
+      width: 75px;
       text-align: left;
     }
     input[type="time"] {
@@ -140,20 +139,20 @@
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 10px;
       color: #fff;
-      padding: 8px 10px;
+      padding: 8px 6px;
       font-size: 15px;
       outline: none;
       flex-grow: 1;
     }
     .btn-timer {
       background: #2563eb;
-      padding: 9px 14px;
+      padding: 8px 12px;
       font-size: 13px;
       border-radius: 10px;
     }
     .btn-cancel {
       background: #475569;
-      padding: 9px 10px;
+      padding: 8px 10px;
       font-size: 13px;
       border-radius: 10px;
     }
@@ -169,15 +168,18 @@
 
   <div class="card">
     <div class="badge">
-      <span class="dot"></span> Smart Schedule • ESP-01S
+      <span class="dot"></span> Blynk API • ESP-01S
     </div>
-    <h1>Bảng Điều Khiển & Hẹn Giờ</h1>
+    <h1>Điều Khiển & Hẹn Giờ</h1>
 
     <div class="status-panel">
-      <div class="status-label">Trạng thái rơ-le (GPIO0)</div>
+      <div class="status-label">Trạng thái thiết bị</div>
       <div id="statusText" class="status-value status-off">SẴN SÀNG</div>
     </div>
 
+    <!-- ĐÃ ĐẢO TRỰC TIẾP TRÊN WEB:
+         Nút BẬT (màu xanh) sẽ gửi giá trị làm relay đóng thực tế (V0 = 0)
+         Nút TẮT (màu đỏ) sẽ gửi giá trị làm relay ngắt thực tế (V0 = 1) -->
     <div class="buttons-grid">
       <button class="btn-on" onclick="sendRelay(0)">BẬT</button>
       <button class="btn-off" onclick="sendRelay(1)">TẮT</button>
@@ -185,17 +187,23 @@
 
     <div class="section-title">⏱ HẸN GIỜ TỰ ĐỘNG (LƯU VÀO ESP)</div>
 
-    <!-- Hàng hẹn giờ bật -->
+    <!-- Hẹn giờ BẬT: gửi vào slot giờ bật trên ESP nhưng đảo chân nếu ESP nhận V3/V4, 
+         ở đây ESP đang so khớp:
+         onHour/onMin (V1, V2) -> setDevice(1) [đang làm relay bị TẮT]
+         offHour/offMin (V3, V4) -> setDevice(0) [đang làm relay được BẬT]
+         Vì vậy:
+         - Ô Hẹn BẬT trên web sẽ gửi vào V3, V4 (để khi tới giờ đó ESP gọi setDevice(0) -> RƠ-LE ĐƯỢC BẬT)
+         - Ô Hẹn TẮT trên web sẽ gửi vào V1, V2 (để khi tới giờ đó ESP gọi setDevice(1) -> RƠ-LE ĐƯỢC TẮT)
+    -->
     <div class="schedule-row">
-      <span class="schedule-label" style="color: var(--on-color);">Giờ BẬT:</span>
+      <span class="schedule-label" style="color: var(--on-color);">Hẹn BẬT:</span>
       <input type="time" id="timeOn">
       <button class="btn-timer" onclick="saveTimer('ON')">Lưu</button>
       <button class="btn-cancel" onclick="cancelTimer('ON')">Hủy</button>
     </div>
 
-    <!-- Hàng hẹn giờ tắt -->
     <div class="schedule-row">
-      <span class="schedule-label" style="color: var(--off-color);">Giờ TẮT:</span>
+      <span class="schedule-label" style="color: var(--off-color);">Hẹn TẮT:</span>
       <input type="time" id="timeOff">
       <button class="btn-timer" onclick="saveTimer('OFF')">Lưu</button>
       <button class="btn-cancel" onclick="cancelTimer('OFF')">Hủy</button>
@@ -211,18 +219,20 @@
     const statusEl = document.getElementById("statusText");
     const logEl = document.getElementById("logMsg");
 
-    function ping(url, callback) {
+    function callBlynk(urlParams, msg, onDone) {
+      logEl.textContent = msg;
       const img = new Image();
-      img.src = `${url}&t=${Date.now()}`;
+      img.src = `${BASE_URL}/update?token=${TOKEN}&${urlParams}&t=${Date.now()}`;
       img.onload = img.onerror = function() {
-        if (callback) callback();
+        if (onDone) onDone();
       };
     }
 
+    // val = 0: Nút BẬT (khiến relay đóng)
+    // val = 1: Nút TẮT (khiến relay ngắt)
     function sendRelay(val) {
       const isTurnOn = (val === 0);
-      logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
-      ping(`${BASE_URL}/update?token=${TOKEN}&V0=${val}`, function() {
+      callBlynk(`V0=${val}`, isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...", function() {
         if (isTurnOn) {
           statusEl.textContent = "ĐANG BẬT";
           statusEl.className = "status-value status-on";
@@ -235,22 +245,31 @@
       });
     }
 
+    // Đảo ngược chân hẹn giờ trên Web để khớp với chip hiện tại:
+    // Cài Hẹn BẬT -> gửi vào V3 (giờ) & V4 (phút) để kích lệnh setDevice(0)
+    // Cài Hẹn TẮT -> gửi vào V1 (giờ) & V2 (phút) để kích lệnh setDevice(1)
     function saveTimer(type) {
       if (type === 'ON') {
         const val = document.getElementById('timeOn').value;
         if (!val) { alert("Vui lòng chọn giờ bật!"); return; }
         const [h, m] = val.split(':');
-        logEl.textContent = `Đang lưu hẹn giờ BẬT lúc ${val}...`;
-        ping(`${BASE_URL}/update?token=${TOKEN}&V1=${parseInt(h)}&V2=${parseInt(m)}`, function() {
-          logEl.textContent = `Đã cài hẹn giờ BẬT: ${val}`;
+        logEl.textContent = `Đang lưu hẹn BẬT lúc ${val}...`;
+
+        callBlynk(`V3=${parseInt(h)}`, "Đang gửi cấu hình...", function() {
+          callBlynk(`V4=${parseInt(m)}`, `Đã hẹn giờ BẬT lúc: ${val}`, function() {
+            logEl.textContent = `Đã kích hoạt hẹn BẬT lúc ${val}`;
+          });
         });
       } else {
         const val = document.getElementById('timeOff').value;
         if (!val) { alert("Vui lòng chọn giờ tắt!"); return; }
         const [h, m] = val.split(':');
-        logEl.textContent = `Đang lưu hẹn giờ TẮT lúc ${val}...`;
-        ping(`${BASE_URL}/update?token=${TOKEN}&V3=${parseInt(h)}&V4=${parseInt(m)}`, function() {
-          logEl.textContent = `Đã cài hẹn giờ TẮT: ${val}`;
+        logEl.textContent = `Đang lưu hẹn TẮT lúc ${val}...`;
+
+        callBlynk(`V1=${parseInt(h)}`, "Đang gửi cấu hình...", function() {
+          callBlynk(`V2=${parseInt(m)}`, `Đã hẹn giờ TẮT lúc: ${val}`, function() {
+            logEl.textContent = `Đã kích hoạt hẹn TẮT lúc ${val}`;
+          });
         });
       }
     }
@@ -258,15 +277,17 @@
     function cancelTimer(type) {
       if (type === 'ON') {
         document.getElementById('timeOn').value = '';
-        logEl.textContent = "Đang hủy hẹn giờ BẬT...";
-        ping(`${BASE_URL}/update?token=${TOKEN}&V1=-1&V2=-1`, function() {
-          logEl.textContent = "Đã hủy hẹn giờ BẬT!";
+        callBlynk(`V3=-1`, "Đang hủy...", function() {
+          callBlynk(`V4=-1`, "Đã hủy hẹn giờ BẬT!", function() {
+            logEl.textContent = "Đã hủy hẹn giờ BẬT!";
+          });
         });
       } else {
         document.getElementById('timeOff').value = '';
-        logEl.textContent = "Đang hủy hẹn giờ TẮT...";
-        ping(`${BASE_URL}/update?token=${TOKEN}&V3=-1&V4=-1`, function() {
-          logEl.textContent = "Đã hủy hẹn giờ TẮT!";
+        callBlynk(`V1=-1`, "Đang hủy...", function() {
+          callBlynk(`V2=-1`, "Đã hủy hẹn giờ TẮT!", function() {
+            logEl.textContent = "Đã hủy hẹn giờ TẮT!";
+          });
         });
       }
     }
