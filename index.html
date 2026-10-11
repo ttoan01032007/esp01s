@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Bảng Điều Khiển & Hẹn Giờ ESP-01S</title>
+  <title>Điều Khiển & Hẹn Giờ 2 ESP-01S</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -13,6 +13,7 @@
       --on-color: #22c55e;
       --off-color: #ef4444;
       --accent: #38bdf8;
+      --device2: #a855f7;
     }
     * {
       box-sizing: border-box;
@@ -28,14 +29,15 @@
       align-items: center;
       min-height: 100vh;
       padding: 24px 16px;
+      gap: 20px;
     }
     .card {
       background-color: var(--card);
       border-radius: 24px;
-      padding: 28px 20px;
+      padding: 24px 18px;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      max-width: 420px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
       text-align: center;
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
@@ -51,26 +53,30 @@
       color: var(--accent);
       margin-bottom: 12px;
     }
-    .badge .dot {
+    .badge-dev2 {
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--device2);
+    }
+    .dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background-color: var(--accent);
+      background-color: currentColor;
     }
-    h1 {
-      font-size: 22px;
+    h2 {
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
     .status-panel {
-      margin-bottom: 20px;
-      padding: 16px;
+      margin-bottom: 18px;
+      padding: 14px;
       background: rgba(15, 23, 42, 0.6);
       border-radius: 16px;
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .status-label {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
       margin-bottom: 4px;
       text-transform: uppercase;
@@ -78,25 +84,29 @@
     .status-value {
       font-size: 20px;
       font-weight: 800;
+      transition: all 0.3s ease;
     }
     .status-on {
       color: var(--on-color);
-      text-shadow: 0 0 16px rgba(34, 197, 94, 0.4);
+      text-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
     }
     .status-off {
       color: var(--off-color);
-      text-shadow: 0 0 16px rgba(239, 68, 68, 0.4);
+      text-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
+    }
+    .status-wait {
+      color: var(--text-muted);
     }
     .buttons-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 24px;
+      gap: 12px;
+      margin-bottom: 18px;
     }
     button {
       border: none;
       border-radius: 14px;
-      padding: 16px 0;
+      padding: 14px 0;
       font-size: 16px;
       font-weight: 700;
       color: white;
@@ -106,32 +116,32 @@
     button:active { transform: scale(0.97); }
     .btn-on {
       background: linear-gradient(135deg, #22c55e, #16a34a);
-      box-shadow: 0 6px 16px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
     }
     .btn-off {
       background: linear-gradient(135deg, #ef4444, #dc2626);
-      box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
     }
     .section-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--accent);
-      margin: 18px 0 12px;
+      margin: 14px 0 10px;
       text-align: left;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 16px;
+      padding-top: 14px;
     }
     .schedule-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .schedule-label {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      width: 75px;
+      width: 72px;
       text-align: left;
     }
     input[type="time"] {
@@ -140,7 +150,7 @@
       border-radius: 10px;
       color: #fff;
       padding: 8px 6px;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
       flex-grow: 1;
     }
@@ -157,140 +167,196 @@
       border-radius: 10px;
     }
     .footer-log {
-      margin-top: 16px;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
       min-height: 18px;
+      margin-top: 6px;
     }
   </style>
 </head>
 <body>
 
+  <!-- ================= THIẾT BỊ 1 (V0) ================= -->
   <div class="card">
     <div class="badge">
-      <span class="dot"></span> Blynk API • ESP-01S
+      <span class="dot"></span> Blynk API • ESP 1 (V0)
     </div>
-    <h1>Điều Khiển & Hẹn Giờ</h1>
+    <h2>Thiết Bị 1</h2>
 
     <div class="status-panel">
-      <div class="status-label">Trạng thái thiết bị</div>
-      <div id="statusText" class="status-value status-off">SẴN SÀNG</div>
+      <div class="status-label">Trạng thái thiết bị 1</div>
+      <div id="status1" class="status-value status-wait">ĐANG ĐỒNG BỘ...</div>
     </div>
 
-    <!-- ĐÃ ĐẢO TRỰC TIẾP TRÊN WEB:
-         Nút BẬT (màu xanh) sẽ gửi giá trị làm relay đóng thực tế (V0 = 0)
-         Nút TẮT (màu đỏ) sẽ gửi giá trị làm relay ngắt thực tế (V0 = 1) -->
     <div class="buttons-grid">
-      <button class="btn-on" onclick="sendRelay(0)">BẬT</button>
-      <button class="btn-off" onclick="sendRelay(1)">TẮT</button>
+      <button class="btn-on" onclick="sendRelay(1, 1)">BẬT</button>
+      <button class="btn-off" onclick="sendRelay(1, 0)">TẮT</button>
     </div>
 
-    <div class="section-title">⏱ HẸN GIỜ TỰ ĐỘNG (LƯU VÀO ESP)</div>
+    <div class="section-title">⏱ HẸN GIỜ TỰ ĐỘNG - THIẾT BỊ 1</div>
 
-    <!-- Hẹn giờ BẬT: gửi vào slot giờ bật trên ESP nhưng đảo chân nếu ESP nhận V3/V4, 
-         ở đây ESP đang so khớp:
-         onHour/onMin (V1, V2) -> setDevice(1) [đang làm relay bị TẮT]
-         offHour/offMin (V3, V4) -> setDevice(0) [đang làm relay được BẬT]
-         Vì vậy:
-         - Ô Hẹn BẬT trên web sẽ gửi vào V3, V4 (để khi tới giờ đó ESP gọi setDevice(0) -> RƠ-LE ĐƯỢC BẬT)
-         - Ô Hẹn TẮT trên web sẽ gửi vào V1, V2 (để khi tới giờ đó ESP gọi setDevice(1) -> RƠ-LE ĐƯỢC TẮT)
-    -->
     <div class="schedule-row">
       <span class="schedule-label" style="color: var(--on-color);">Hẹn BẬT:</span>
-      <input type="time" id="timeOn">
-      <button class="btn-timer" onclick="saveTimer('ON')">Lưu</button>
-      <button class="btn-cancel" onclick="cancelTimer('ON')">Hủy</button>
+      <input type="time" id="timeOn1">
+      <button class="btn-timer" onclick="saveTimer(1, 'ON')">Lưu</button>
+      <button class="btn-cancel" onclick="cancelTimer(1, 'ON')">Hủy</button>
     </div>
 
     <div class="schedule-row">
       <span class="schedule-label" style="color: var(--off-color);">Hẹn TẮT:</span>
-      <input type="time" id="timeOff">
-      <button class="btn-timer" onclick="saveTimer('OFF')">Lưu</button>
-      <button class="btn-cancel" onclick="cancelTimer('OFF')">Hủy</button>
+      <input type="time" id="timeOff1">
+      <button class="btn-timer" onclick="saveTimer(1, 'OFF')">Lưu</button>
+      <button class="btn-cancel" onclick="cancelTimer(1, 'OFF')">Hủy</button>
     </div>
 
-    <div class="footer-log" id="logMsg">Chạm nút để thao tác</div>
+    <div class="footer-log" id="log1">Sẵn sàng</div>
+  </div>
+
+  <!-- ================= THIẾT BỊ 2 (V6) ================= -->
+  <div class="card">
+    <div class="badge badge-dev2">
+      <span class="dot"></span> Blynk API • ESP 2 (V6)
+    </div>
+    <h2>Thiết Bị 2</h2>
+
+    <div class="status-panel">
+      <div class="status-label">Trạng thái thiết bị 2</div>
+      <div id="status2" class="status-value status-wait">ĐANG ĐỒNG BỘ...</div>
+    </div>
+
+    <div class="buttons-grid">
+      <button class="btn-on" onclick="sendRelay(2, 1)">BẬT</button>
+      <button class="btn-off" onclick="sendRelay(2, 0)">TẮT</button>
+    </div>
+
+    <div class="section-title" style="color: var(--device2);">⏱ HẸN GIỜ TỰ ĐỘNG - THIẾT BỊ 2</div>
+
+    <div class="schedule-row">
+      <span class="schedule-label" style="color: var(--on-color);">Hẹn BẬT:</span>
+      <input type="time" id="timeOn2">
+      <button class="btn-timer" onclick="saveTimer(2, 'ON')">Lưu</button>
+      <button class="btn-cancel" onclick="cancelTimer(2, 'ON')">Hủy</button>
+    </div>
+
+    <div class="schedule-row">
+      <span class="schedule-label" style="color: var(--off-color);">Hẹn TẮT:</span>
+      <input type="time" id="timeOff2">
+      <button class="btn-timer" onclick="saveTimer(2, 'OFF')">Lưu</button>
+      <button class="btn-cancel" onclick="cancelTimer(2, 'OFF')">Hủy</button>
+    </div>
+
+    <div class="footer-log" id="log2">Sẵn sàng</div>
   </div>
 
   <script>
     const TOKEN = "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT";
     const BASE_URL = "https://sgp1.blynk.cloud/external/api";
 
-    const statusEl = document.getElementById("statusText");
-    const logEl = document.getElementById("logMsg");
+    // Cấu hình chân Pin cho từng thiết bị
+    const CONFIG = {
+      1: { relayPin: "V0", onH: "V1", onM: "V2", offH: "V3", offM: "V4" },
+      2: { relayPin: "V6", onH: "V7", onM: "V8", offH: "V9", offM: "V10" }
+    };
 
-    function callBlynk(urlParams, msg, onDone) {
-      logEl.textContent = msg;
-      const img = new Image();
-      img.src = `${BASE_URL}/update?token=${TOKEN}&${urlParams}&t=${Date.now()}`;
-      img.onload = img.onerror = function() {
-        if (onDone) onDone();
-      };
-    }
+    let stateCache = { 1: null, 2: null };
 
-    // val = 0: Nút BẬT (khiến relay đóng)
-    // val = 1: Nút TẮT (khiến relay ngắt)
-    function sendRelay(val) {
-      const isTurnOn = (val === 0);
-      callBlynk(`V0=${val}`, isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...", function() {
-        if (isTurnOn) {
-          statusEl.textContent = "ĐANG BẬT";
-          statusEl.className = "status-value status-on";
-          logEl.textContent = "Đã BẬT thành công!";
-        } else {
-          statusEl.textContent = "ĐANG TẮT";
-          statusEl.className = "status-value status-off";
-          logEl.textContent = "Đã TẮT thành công!";
-        }
-      });
-    }
-
-    // Đảo ngược chân hẹn giờ trên Web để khớp với chip hiện tại:
-    // Cài Hẹn BẬT -> gửi vào V3 (giờ) & V4 (phút) để kích lệnh setDevice(0)
-    // Cài Hẹn TẮT -> gửi vào V1 (giờ) & V2 (phút) để kích lệnh setDevice(1)
-    function saveTimer(type) {
-      if (type === 'ON') {
-        const val = document.getElementById('timeOn').value;
-        if (!val) { alert("Vui lòng chọn giờ bật!"); return; }
-        const [h, m] = val.split(':');
-        logEl.textContent = `Đang lưu hẹn BẬT lúc ${val}...`;
-
-        callBlynk(`V3=${parseInt(h)}`, "Đang gửi cấu hình...", function() {
-          callBlynk(`V4=${parseInt(m)}`, `Đã hẹn giờ BẬT lúc: ${val}`, function() {
-            logEl.textContent = `Đã kích hoạt hẹn BẬT lúc ${val}`;
-          });
-        });
-      } else {
-        const val = document.getElementById('timeOff').value;
-        if (!val) { alert("Vui lòng chọn giờ tắt!"); return; }
-        const [h, m] = val.split(':');
-        logEl.textContent = `Đang lưu hẹn TẮT lúc ${val}...`;
-
-        callBlynk(`V1=${parseInt(h)}`, "Đang gửi cấu hình...", function() {
-          callBlynk(`V2=${parseInt(m)}`, `Đã hẹn giờ TẮT lúc: ${val}`, function() {
-            logEl.textContent = `Đã kích hoạt hẹn TẮT lúc ${val}`;
-          });
-        });
+    // Cập nhật giao diện trạng thái
+    function setStatusUI(devId, val) {
+      const el = document.getElementById(`status${devId}`);
+      if (val === "1" || val === 1) {
+        el.textContent = "ĐANG BẬT";
+        el.className = "status-value status-on";
+      } else if (val === "0" || val === 0) {
+        el.textContent = "ĐANG TẮT";
+        el.className = "status-value status-off";
       }
     }
 
-    function cancelTimer(type) {
-      if (type === 'ON') {
-        document.getElementById('timeOn').value = '';
-        callBlynk(`V3=-1`, "Đang hủy...", function() {
-          callBlynk(`V4=-1`, "Đã hủy hẹn giờ BẬT!", function() {
-            logEl.textContent = "Đã hủy hẹn giờ BẬT!";
-          });
-        });
-      } else {
-        document.getElementById('timeOff').value = '';
-        callBlynk(`V1=-1`, "Đang hủy...", function() {
-          callBlynk(`V2=-1`, "Đã hủy hẹn giờ TẮT!", function() {
-            logEl.textContent = "Đã hủy hẹn giờ TẮT!";
-          });
-        });
+    // Tự động kiểm tra trạng thái từ Blynk Cloud (Auto Polling)
+    async function syncStatus() {
+      for (const devId of [1, 2]) {
+        try {
+          const pin = CONFIG[devId].relayPin;
+          const res = await fetch(`${BASE_URL}/get?token=${TOKEN}&${pin}&t=${Date.now()}`);
+          if (res.ok) {
+            const val = (await res.text()).trim();
+            if (val === "0" || val === "1") {
+              if (stateCache[devId] !== val) {
+                stateCache[devId] = val;
+                setStatusUI(devId, val);
+              }
+            }
+          }
+        } catch (e) {}
       }
     }
+
+    async function callBlynk(urlParams) {
+      try {
+        const res = await fetch(`${BASE_URL}/update?token=${TOKEN}&${urlParams}&t=${Date.now()}`);
+        return res.ok;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // Bật / Tắt trực tiếp
+    async function sendRelay(devId, val) {
+      const logEl = document.getElementById(`log${devId}`);
+      const pin = CONFIG[devId].relayPin;
+      const isTurnOn = (val === 1);
+
+      logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
+      const success = await callBlynk(`${pin}=${val}`);
+      if (success) {
+        stateCache[devId] = String(val);
+        setStatusUI(devId, val);
+        logEl.textContent = isTurnOn ? "Đã BẬT thành công!" : "Đã TẮT thành công!";
+      } else {
+        logEl.textContent = "Lỗi gửi lệnh, vui lòng thử lại!";
+      }
+    }
+
+    // Lưu hẹn giờ
+    async function saveTimer(devId, type) {
+      const logEl = document.getElementById(`log${devId}`);
+      const inputEl = document.getElementById(type === 'ON' ? `timeOn${devId}` : `timeOff${devId}`);
+      const val = inputEl.value;
+
+      if (!val) {
+        alert("Vui lòng chọn giờ hẹn!");
+        return;
+      }
+
+      const [h, m] = val.split(':');
+      const hPin = type === 'ON' ? CONFIG[devId].onH : CONFIG[devId].offH;
+      const mPin = type === 'ON' ? CONFIG[devId].onM : CONFIG[devId].offM;
+
+      logEl.textContent = `Đang lưu hẹn ${type === 'ON' ? 'BẬT' : 'TẮT'} lúc ${val}...`;
+      await callBlynk(`${hPin}=${parseInt(h)}`);
+      await callBlynk(`${mPin}=${parseInt(m)}`);
+      logEl.textContent = `Đã kích hoạt hẹn ${type === 'ON' ? 'BẬT' : 'TẮT'} lúc ${val}`;
+    }
+
+    // Hủy hẹn giờ
+    async function cancelTimer(devId, type) {
+      const logEl = document.getElementById(`log${devId}`);
+      const inputEl = document.getElementById(type === 'ON' ? `timeOn${devId}` : `timeOff${devId}`);
+      inputEl.value = '';
+
+      const hPin = type === 'ON' ? CONFIG[devId].onH : CONFIG[devId].offH;
+      const mPin = type === 'ON' ? CONFIG[devId].onM : CONFIG[devId].offM;
+
+      logEl.textContent = "Đang hủy...";
+      await callBlynk(`${hPin}=-1`);
+      await callBlynk(`${mPin}=-1`);
+      logEl.textContent = `Đã hủy hẹn giờ ${type === 'ON' ? 'BẬT' : 'TẮT'}!`;
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      syncStatus();
+      setInterval(syncStatus, 2000); // Quét trạng thái mỗi 2 giây
+    });
   </script>
 </body>
 </html>
