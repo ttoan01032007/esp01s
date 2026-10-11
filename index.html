@@ -1,289 +1,194 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Điều Khiển & Hẹn Giờ 2 ESP-01S</title>
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --on-color: #22c55e;
-      --off-color: #ef4444;
-      --accent: #38bdf8;
-      --device2: #a855f7;
-    }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 24px 16px;
-      gap: 20px;
-    }
-    .card {
-      background-color: var(--card);
-      border-radius: 24px;
-      padding: 24px 18px;
-      width: 100%;
-      max-width: 420px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
-      text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 500;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-    .badge-dev2 {
-      background: rgba(168, 85, 247, 0.15);
-      color: var(--device2);
-    }
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: currentColor;
-    }
-    h2 {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .status-panel {
-      margin-bottom: 18px;
-      padding: 14px;
-      background: rgba(15, 23, 42, 0.6);
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    .status-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-      text-transform: uppercase;
-    }
-    .status-value {
-      font-size: 20px;
-      font-weight: 800;
-      transition: all 0.3s ease;
-    }
-    .status-on {
-      color: var(--on-color);
-      text-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
-    }
-    .status-off {
-      color: var(--off-color);
-      text-shadow: 0 0 14px rgba(239, 68, 68, 0.4);
-    }
-    .status-wait {
-      color: var(--text-muted);
-    }
-    .buttons-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-    button {
-      border: none;
-      border-radius: 14px;
-      padding: 14px 0;
-      font-size: 16px;
-      font-weight: 700;
-      color: white;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    button:active { transform: scale(0.97); }
-    .btn-on {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.3);
-    }
-    .btn-off {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
-    }
-    .section-title {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent);
-      margin: 14px 0 10px;
-      text-align: left;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 14px;
-    }
-    .schedule-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .schedule-label {
-      font-size: 13px;
-      font-weight: 600;
-      width: 72px;
-      text-align: left;
-    }
-    input[type="time"] {
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 10px;
-      color: #fff;
-      padding: 8px 6px;
-      font-size: 14px;
-      outline: none;
-      flex-grow: 1;
-    }
-    .btn-timer {
-      background: #2563eb;
-      padding: 8px 12px;
-      font-size: 13px;
-      border-radius: 10px;
-    }
-    .btn-cancel {
-      background: #475569;
-      padding: 8px 10px;
-      font-size: 13px;
-      border-radius: 10px;
-    }
-    .footer-log {
-      font-size: 12px;
-      color: var(--text-muted);
-      min-height: 18px;
-      margin-top: 6px;
-    }
-  </style>
+  <title>MCU Control Center</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--text:#edf4ff;--muted:#8ea1bb;--green:#35d49a;--red:#ff647c;--blue:#63a9ff;--purple:#b69aff;--amber:#ffc56b;--border:rgba(148,163,184,.16)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body{min-height:100vh;padding:36px 24px 48px;color:var(--text);background:radial-gradient(ellipse at 50% -20%,#1b3153 0%,transparent 55%),var(--bg)}
+.page-header{max-width:1440px;margin:0 auto 28px}.eyebrow{color:var(--blue);font-size:11px;font-weight:800;letter-spacing:.19em;text-transform:uppercase;margin-bottom:10px}.page-header h1{font-size:clamp(25px,3vw,36px);letter-spacing:-.04em}.page-header p{color:var(--muted);margin-top:10px;font-size:14px}
+.dashboard{max-width:1440px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:start}
+.card{min-width:0;background:linear-gradient(160deg,#18263b,#0e1727);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:0 18px 45px #0004;text-align:left;transition:.2s}.card:hover{border-color:#63a9ff66;transform:translateY(-2px)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:8px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:#63a9ff1f;color:var(--blue);margin-bottom:17px}.badge-dev2{background:#b69aff1f;color:var(--purple)}.badge-dev3{background:#ffc56b1f;color:var(--amber)}.dot{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
+h2{font-size:21px;font-weight:750;letter-spacing:-.025em;margin-bottom:20px}.status-panel{margin-bottom:18px;padding:16px;background:#050a1466;border-radius:13px;border:1px solid var(--border)}.status-label{font-size:10px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.13em;font-weight:700}.status-value{font-size:18px;font-weight:800}.status-on{color:var(--green)}.status-off{color:var(--red)}.status-wait{color:var(--muted)}
+.buttons-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}button{border:1px solid transparent;border-radius:10px;padding:12px 10px;font-size:13px;font-weight:750;color:white;cursor:pointer;transition:transform .15s,filter .15s}button:hover{filter:brightness(1.08)}button:active{transform:scale(.98)}button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:3px}.btn-on{background:linear-gradient(135deg,#20b981,#159568)}.btn-off{background:linear-gradient(135deg,#f05a70,#cf3d57)}
+.section-title{font-size:10px;font-weight:800;color:var(--blue);margin:0 0 15px;text-transform:uppercase;letter-spacing:.12em;border-top:1px solid var(--border);padding-top:20px}.schedule-row{display:grid;grid-template-columns:58px minmax(0,1fr) auto auto;align-items:center;gap:6px;margin-bottom:10px}.schedule-label{font-size:11px;font-weight:750}input[type=time]{min-width:0;width:100%;background:#0a1220;border:1px solid var(--border);border-radius:8px;color:var(--text);padding:9px 6px;font-size:12px}.btn-timer{background:#245da9;padding:9px 10px;font-size:11px;border-radius:8px}.btn-cancel{background:#28364a;border-color:var(--border);padding:9px;font-size:11px;border-radius:8px;color:#c2cee0}.footer-log{font-size:11px;color:var(--muted);min-height:17px;margin:15px 0 10px;line-height:1.5}.btn-reset-wifi{background:transparent;border:1px solid var(--border);padding:10px 12px;font-size:11px;border-radius:9px;color:#aebed3;width:100%}.btn-reset-wifi:hover{background:#ffffff0a;color:var(--text)}
+@media(max-width:1100px){.dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){body{padding:25px 14px 32px}.dashboard{grid-template-columns:1fr;gap:14px}.card{padding:21px 18px}.page-header{margin-bottom:22px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+</style>
 </head>
 <body>
+<header class="page-header"><div class="eyebrow">Embedded Systems · Remote Control</div><h1>MCU Control Center</h1><p>Monitor device status, manage power, and configure schedules from one place.</p></header>
+<main class="dashboard">
 
-  <!-- ================= THIẾT BỊ 1 (V0) ================= -->
+  <!-- ================= THIẾT BỊ 1 ================= -->
   <div class="card">
     <div class="badge">
-      <span class="dot"></span> Blynk API • ESP 1 (V0)
+      <span class="dot"></span> MCU 1
     </div>
-    <h2>Thiết Bị 1</h2>
+    <h2>MCU 1</h2>
 
     <div class="status-panel">
-      <div class="status-label">Trạng thái thiết bị 1</div>
-      <div id="status1" class="status-value status-wait">ĐANG ĐỒNG BỘ...</div>
+      <div class="status-label">Output status</div>
+      <div id="status1" class="status-value status-wait">SYNCING...</div>
     </div>
 
     <div class="buttons-grid">
-      <button class="btn-on" onclick="sendRelay(1, 1)">BẬT</button>
-      <button class="btn-off" onclick="sendRelay(1, 0)">TẮT</button>
+      <button class="btn-on" onclick="sendAction(1, 'ON')">TURN ON</button>
+      <button class="btn-off" onclick="sendAction(1, 'OFF')">TURN OFF</button>
     </div>
 
-    <div class="section-title">⏱ HẸN GIỜ TỰ ĐỘNG - THIẾT BỊ 1</div>
+    <div class="section-title">SCHEDULED CONTROL · MCU 1</div>
 
     <div class="schedule-row">
-      <span class="schedule-label" style="color: var(--on-color);">Hẹn BẬT:</span>
+      <span class="schedule-label" style="color: var(--on-color);">Turn-on:</span>
       <input type="time" id="timeOn1">
-      <button class="btn-timer" onclick="saveTimer(1, 'ON')">Lưu</button>
-      <button class="btn-cancel" onclick="cancelTimer(1, 'ON')">Hủy</button>
+      <button class="btn-timer" onclick="saveTimer(1, 'ON')">Save</button>
+      <button class="btn-cancel" onclick="cancelTimer(1, 'ON')">Cancel</button>
     </div>
 
     <div class="schedule-row">
-      <span class="schedule-label" style="color: var(--off-color);">Hẹn TẮT:</span>
+      <span class="schedule-label" style="color: var(--off-color);">Turn-off:</span>
       <input type="time" id="timeOff1">
-      <button class="btn-timer" onclick="saveTimer(1, 'OFF')">Lưu</button>
-      <button class="btn-cancel" onclick="cancelTimer(1, 'OFF')">Hủy</button>
+      <button class="btn-timer" onclick="saveTimer(1, 'OFF')">Save</button>
+      <button class="btn-cancel" onclick="cancelTimer(1, 'OFF')">Cancel</button>
     </div>
 
-    <div class="footer-log" id="log1">Sẵn sàng</div>
+    <div class="footer-log" id="log1">Ready</div>
+    <button class="btn-reset-wifi" onclick="resetWiFi(1)">↻ Reset Wi-Fi · MCU 1</button>
   </div>
 
-  <!-- ================= THIẾT BỊ 2 (V6) ================= -->
+  <!-- ================= THIẾT BỊ 2 ================= -->
   <div class="card">
     <div class="badge badge-dev2">
-      <span class="dot"></span> Blynk API • ESP 2 (V6)
+      <span class="dot"></span> MCU 2
     </div>
-    <h2>Thiết Bị 2</h2>
+    <h2>MCU 2</h2>
 
     <div class="status-panel">
-      <div class="status-label">Trạng thái thiết bị 2</div>
-      <div id="status2" class="status-value status-wait">ĐANG ĐỒNG BỘ...</div>
+      <div class="status-label">Output status</div>
+      <div id="status2" class="status-value status-wait">SYNCING...</div>
     </div>
 
     <div class="buttons-grid">
-      <button class="btn-on" onclick="sendRelay(2, 1)">BẬT</button>
-      <button class="btn-off" onclick="sendRelay(2, 0)">TẮT</button>
+      <button class="btn-on" onclick="sendAction(2, 'ON')">TURN ON</button>
+      <button class="btn-off" onclick="sendAction(2, 'OFF')">TURN OFF</button>
     </div>
 
-    <div class="section-title" style="color: var(--device2);">⏱ HẸN GIỜ TỰ ĐỘNG - THIẾT BỊ 2</div>
+    <div class="section-title" style="color: var(--device2);">SCHEDULED CONTROL · MCU 2</div>
 
     <div class="schedule-row">
-      <span class="schedule-label" style="color: var(--on-color);">Hẹn BẬT:</span>
+      <span class="schedule-label" style="color: var(--on-color);">Turn-on:</span>
       <input type="time" id="timeOn2">
-      <button class="btn-timer" onclick="saveTimer(2, 'ON')">Lưu</button>
-      <button class="btn-cancel" onclick="cancelTimer(2, 'ON')">Hủy</button>
+      <button class="btn-timer" onclick="saveTimer(2, 'ON')">Save</button>
+      <button class="btn-cancel" onclick="cancelTimer(2, 'ON')">Cancel</button>
     </div>
 
     <div class="schedule-row">
-      <span class="schedule-label" style="color: var(--off-color);">Hẹn TẮT:</span>
+      <span class="schedule-label" style="color: var(--off-color);">Turn-off:</span>
       <input type="time" id="timeOff2">
-      <button class="btn-timer" onclick="saveTimer(2, 'OFF')">Lưu</button>
-      <button class="btn-cancel" onclick="cancelTimer(2, 'OFF')">Hủy</button>
+      <button class="btn-timer" onclick="saveTimer(2, 'OFF')">Save</button>
+      <button class="btn-cancel" onclick="cancelTimer(2, 'OFF')">Cancel</button>
     </div>
 
-    <div class="footer-log" id="log2">Sẵn sàng</div>
+    <div class="footer-log" id="log2">Ready</div>
+    <button class="btn-reset-wifi" onclick="resetWiFi(2)">↻ Reset Wi-Fi · MCU 2</button>
+  </div>
+
+  <!-- ================= THIẾT BỊ 3 ================= -->
+  <div class="card">
+    <div class="badge badge-dev3">
+      <span class="dot"></span> MCU 3
+    </div>
+    <h2>MCU 3</h2>
+
+    <div class="status-panel">
+      <div class="status-label">Output status</div>
+      <div id="status3" class="status-value status-wait">SYNCING...</div>
+    </div>
+
+    <div class="buttons-grid">
+      <button class="btn-on" onclick="sendAction(3, 'ON')">TURN ON</button>
+      <button class="btn-off" onclick="sendAction(3, 'OFF')">TURN OFF</button>
+    </div>
+
+    <div class="section-title" style="color: var(--device3);">SCHEDULED CONTROL · MCU 3</div>
+
+    <div class="schedule-row">
+      <span class="schedule-label" style="color: var(--on-color);">Turn-on:</span>
+      <input type="time" id="timeOn3">
+      <button class="btn-timer" onclick="saveTimer(3, 'ON')">Save</button>
+      <button class="btn-cancel" onclick="cancelTimer(3, 'ON')">Cancel</button>
+    </div>
+
+    <div class="schedule-row">
+      <span class="schedule-label" style="color: var(--off-color);">Turn-off:</span>
+      <input type="time" id="timeOff3">
+      <button class="btn-timer" onclick="saveTimer(3, 'OFF')">Save</button>
+      <button class="btn-cancel" onclick="cancelTimer(3, 'OFF')">Cancel</button>
+    </div>
+
+    <div class="footer-log" id="log3">Ready</div>
+    <button class="btn-reset-wifi" onclick="resetWiFi(3)">↻ Reset Wi-Fi · MCU 3</button>
   </div>
 
   <script>
-    const TOKEN = "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT";
-    const BASE_URL = "https://sgp1.blynk.cloud/external/api";
-
-    // Cấu hình chân Pin cho từng thiết bị
-    const CONFIG = {
-      1: { relayPin: "V0", onH: "V1", onM: "V2", offH: "V3", offM: "V4" },
-      2: { relayPin: "V6", onH: "V7", onM: "V8", offH: "V9", offM: "V10" }
+    const DEVICES = {
+      1: {
+        token: "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT",
+        inverted: true,
+        timerOnH: "V3", timerOnM: "V4",
+        timerOffH: "V1", timerOffM: "V2"
+      },
+      2: {
+        token: "E50JTvY4mWn13adJTb3MulWZ_v3CC9pu",
+        inverted: false,
+        timerOnH: "V1", timerOnM: "V2",
+        timerOffH: "V3", timerOffM: "V4"
+      },
+      3: {
+        token: "iDWMhTnPM6RJ7MSExwr6kCzNROPoOwUD",
+        inverted: true,
+        timerOnH: "V3", timerOnM: "V4",
+        timerOffH: "V1", timerOffM: "V2"
+      }
     };
 
-    let stateCache = { 1: null, 2: null };
+    const BASE_URL = "https://sgp1.blynk.cloud/external/api";
+    let stateCache = { 1: null, 2: null, 3: null };
 
-    // Cập nhật giao diện trạng thái
-    function setStatusUI(devId, val) {
+    function updateUI(devId, isDeviceOn) {
       const el = document.getElementById(`status${devId}`);
-      if (val === "1" || val === 1) {
-        el.textContent = "ĐANG BẬT";
+      if (isDeviceOn) {
+        el.textContent = "OUTPUT ON";
         el.className = "status-value status-on";
-      } else if (val === "0" || val === 0) {
-        el.textContent = "ĐANG TẮT";
+      } else {
+        el.textContent = "OUTPUT OFF";
         el.className = "status-value status-off";
       }
     }
 
-    // Tự động kiểm tra trạng thái từ Blynk Cloud (Auto Polling)
+    function sendCommand(token, query, onDone) {
+      const img = new Image();
+      img.src = `${BASE_URL}/update?token=${token}&${query}&t=${Date.now()}`;
+      img.onload = img.onerror = function() {
+        if (onDone) onDone();
+      };
+    }
+
     async function syncStatus() {
-      for (const devId of [1, 2]) {
+      for (const devId of [1, 2, 3]) {
+        const conf = DEVICES[devId];
         try {
-          const pin = CONFIG[devId].relayPin;
-          const res = await fetch(`${BASE_URL}/get?token=${TOKEN}&${pin}&t=${Date.now()}`);
+          const res = await fetch(`${BASE_URL}/get?token=${conf.token}&V0&t=${Date.now()}`);
           if (res.ok) {
-            const val = (await res.text()).trim();
-            if (val === "0" || val === "1") {
-              if (stateCache[devId] !== val) {
-                stateCache[devId] = val;
-                setStatusUI(devId, val);
+            const raw = (await res.text()).trim();
+            if (raw === "0" || raw === "1") {
+              if (stateCache[devId] !== raw) {
+                stateCache[devId] = raw;
+                const isOn = conf.inverted ? (raw === "0") : (raw === "1");
+                updateUI(devId, isOn);
               }
             }
           }
@@ -291,72 +196,80 @@
       }
     }
 
-    async function callBlynk(urlParams) {
-      try {
-        const res = await fetch(`${BASE_URL}/update?token=${TOKEN}&${urlParams}&t=${Date.now()}`);
-        return res.ok;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    // Bật / Tắt trực tiếp
-    async function sendRelay(devId, val) {
+    function sendAction(devId, action) {
+      const conf = DEVICES[devId];
       const logEl = document.getElementById(`log${devId}`);
-      const pin = CONFIG[devId].relayPin;
-      const isTurnOn = (val === 1);
+      const isTurnOn = (action === 'ON');
+      const valToSend = conf.inverted ? (isTurnOn ? 0 : 1) : (isTurnOn ? 1 : 0);
 
-      logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
-      const success = await callBlynk(`${pin}=${val}`);
-      if (success) {
-        stateCache[devId] = String(val);
-        setStatusUI(devId, val);
-        logEl.textContent = isTurnOn ? "Đã BẬT thành công!" : "Đã TẮT thành công!";
-      } else {
-        logEl.textContent = "Lỗi gửi lệnh, vui lòng thử lại!";
-      }
+      logEl.textContent = isTurnOn ? "Sending turn-on command..." : "Sending turn-off command...";
+      
+      sendCommand(conf.token, `V0=${valToSend}`, function() {
+        stateCache[devId] = String(valToSend);
+        updateUI(devId, isTurnOn);
+        logEl.textContent = isTurnOn ? "Output turned on successfully." : "Output turned off successfully.";
+      });
     }
 
-    // Lưu hẹn giờ
-    async function saveTimer(devId, type) {
+    function saveTimer(devId, type) {
+      const conf = DEVICES[devId];
       const logEl = document.getElementById(`log${devId}`);
       const inputEl = document.getElementById(type === 'ON' ? `timeOn${devId}` : `timeOff${devId}`);
       const val = inputEl.value;
 
       if (!val) {
-        alert("Vui lòng chọn giờ hẹn!");
+        alert("Please select a schedule time.");
         return;
       }
 
       const [h, m] = val.split(':');
-      const hPin = type === 'ON' ? CONFIG[devId].onH : CONFIG[devId].offH;
-      const mPin = type === 'ON' ? CONFIG[devId].onM : CONFIG[devId].offM;
+      const hPin = (type === 'ON') ? conf.timerOnH : conf.timerOffH;
+      const mPin = (type === 'ON') ? conf.timerOnM : conf.timerOffM;
 
-      logEl.textContent = `Đang lưu hẹn ${type === 'ON' ? 'BẬT' : 'TẮT'} lúc ${val}...`;
-      await callBlynk(`${hPin}=${parseInt(h)}`);
-      await callBlynk(`${mPin}=${parseInt(m)}`);
-      logEl.textContent = `Đã kích hoạt hẹn ${type === 'ON' ? 'BẬT' : 'TẮT'} lúc ${val}`;
+      logEl.textContent = `Saving ${type === 'ON' ? 'turn-on' : 'turn-off'} schedule...`;
+
+      sendCommand(conf.token, `${hPin}=${parseInt(h)}`, function() {
+        sendCommand(conf.token, `${mPin}=${parseInt(m)}`, function() {
+          logEl.textContent = `Scheduled ${type === 'ON' ? 'turn-on' : 'turn-off'} at ${val}.`;
+        });
+      });
     }
 
-    // Hủy hẹn giờ
-    async function cancelTimer(devId, type) {
+    function cancelTimer(devId, type) {
+      const conf = DEVICES[devId];
       const logEl = document.getElementById(`log${devId}`);
       const inputEl = document.getElementById(type === 'ON' ? `timeOn${devId}` : `timeOff${devId}`);
       inputEl.value = '';
 
-      const hPin = type === 'ON' ? CONFIG[devId].onH : CONFIG[devId].offH;
-      const mPin = type === 'ON' ? CONFIG[devId].onM : CONFIG[devId].offM;
+      const hPin = (type === 'ON') ? conf.timerOnH : conf.timerOffH;
+      const mPin = (type === 'ON') ? conf.timerOnM : conf.timerOffM;
 
-      logEl.textContent = "Đang hủy...";
-      await callBlynk(`${hPin}=-1`);
-      await callBlynk(`${mPin}=-1`);
-      logEl.textContent = `Đã hủy hẹn giờ ${type === 'ON' ? 'BẬT' : 'TẮT'}!`;
+      logEl.textContent = "Cancelling schedule...";
+      sendCommand(conf.token, `${hPin}=-1`, function() {
+        sendCommand(conf.token, `${mPin}=-1`, function() {
+          logEl.textContent = `Cancelled ${type === 'ON' ? 'turn-on' : 'turn-off'} schedule.`;
+        });
+      });
+    }
+
+    // Hàm chủ động yêu cầu ESP xóa WiFi và phát lại AP
+    function resetWiFi(devId) {
+      const apName = `CaiDat_ESP${devId}`;
+      const conf = confirm(`Reset Wi-Fi for MCU ${devId}?\n\nAfter confirmation, the controller will restart and broadcast "${apName}". Connect your phone to this network to configure new Wi-Fi credentials.`);
+      if (conf) {
+        const logEl = document.getElementById(`log${devId}`);
+        logEl.textContent = "Sending Wi-Fi reset command...";
+        sendCommand(DEVICES[devId].token, "V5=1", function() {
+          logEl.textContent = `Command sent. Find the "${apName}" Wi-Fi network to continue setup.`;
+          alert(`Command sent successfully. Connect your phone to "${apName}" to configure a new network.`);
+        });
+      }
     }
 
     window.addEventListener("DOMContentLoaded", () => {
       syncStatus();
-      setInterval(syncStatus, 2000); // Quét trạng thái mỗi 2 giây
+      setInterval(syncStatus, 2000);
     });
   </script>
-</body>
+</main></body>
 </html>
