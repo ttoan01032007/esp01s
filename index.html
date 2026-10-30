@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ThaiToan IoT System - AI Studio · Điều Khiển Thiết Bị</title>
-  <meta name="description" content="Bảng điều khiển và hẹn giờ thiết bị điện từ xa qua Blynk IoT - ThaiToan IoT System - AI Studio">
+  <title>Bảng Điều Khiển Thiết Bị Thông Minh</title>
+  <meta name="description" content="Hệ thống giám sát điều khiển và hẹn giờ thiết bị điện từ xa thông minh">
 
   <!-- Compatibility shim cho Chrome Extensions / Network interceptors -->
   <script>
@@ -42,22 +42,17 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg: #070c16;
-      --card-bg: linear-gradient(165deg, #152238 0%, #0d1626 100%);
-      --card-border: rgba(99, 169, 255, 0.16);
+      --bg: #070d18;
+      --card-bg: linear-gradient(165deg, #131f35 0%, #0b1322 100%);
+      --card-border: rgba(99, 169, 255, 0.15);
       --card-border-hover: rgba(99, 169, 255, 0.35);
       --text: #f0f6fc;
       --muted: #94a3b8;
       --green: #22c55e;
-      --green-light: #4ade80;
-      --green-glow: rgba(34, 197, 94, 0.45);
+      --green-glow: rgba(34, 197, 94, 0.4);
       --red: #ef4444;
-      --red-light: #f87171;
-      --red-glow: rgba(239, 68, 68, 0.45);
+      --red-glow: rgba(239, 68, 68, 0.4);
       --blue: #3b82f6;
-      --blue-glow: rgba(59, 130, 246, 0.35);
-      --purple: #a855f7;
-      --amber: #f59e0b;
     }
 
     * {
@@ -69,22 +64,22 @@
 
     body {
       min-height: 100vh;
-      background: radial-gradient(ellipse at 50% -10%, #1a2f4e 0%, transparent 60%), var(--bg);
+      background: radial-gradient(ellipse at 50% -10%, #172a45 0%, transparent 60%), var(--bg);
       color: var(--text);
       padding: 24px 16px 60px;
       line-height: 1.5;
     }
 
     .container {
-      max-width: 1280px;
+      max-width: 1240px;
       margin: 0 auto;
     }
 
     /* Header */
     header {
       margin-bottom: 24px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
       text-align: center;
     }
 
@@ -94,12 +89,12 @@
       gap: 6px;
       font-size: 13px;
       font-weight: 800;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: #93c5fd;
-      background: rgba(59, 130, 246, 0.15);
-      border: 1px solid rgba(59, 130, 246, 0.35);
-      padding: 6px 14px;
+      background: rgba(59, 130, 246, 0.14);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 6px 16px;
       border-radius: 20px;
       margin-bottom: 12px;
     }
@@ -117,44 +112,58 @@
       margin-top: 6px;
     }
 
-    /* Thanh tóm tắt nhanh cho người lớn tuổi */
+    /* Thanh tóm tắt nhanh */
     .summary-bar {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      background: #0f192b;
+      gap: 16px;
+      background: #0f182a;
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 14px 20px;
+      border-radius: 18px;
+      padding: 16px 22px;
       margin-bottom: 28px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     }
 
     .summary-stats {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 20px;
+      gap: 24px;
     }
 
     .stat-box {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       font-size: 15px;
+    }
+
+    .stat-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
     }
 
     .stat-title {
       color: var(--muted);
-      font-weight: 600;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
 
     .stat-value {
-      font-size: 17px;
-      font-weight: 800;
+      font-size: 18px;
+      font-weight: 900;
       color: #ffffff;
+      line-height: 1.2;
     }
 
     .btn-refresh {
@@ -162,14 +171,14 @@
       color: white;
       border: none;
       border-radius: 12px;
-      padding: 10px 18px;
+      padding: 11px 20px;
       font-size: 14px;
       font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
       transition: all 0.2s;
     }
 
@@ -195,7 +204,7 @@
 
     @media (max-width: 680px) {
       .devices-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 26px; }
+      h1 { font-size: 25px; }
       .summary-bar { flex-direction: column; align-items: stretch; }
     }
 
@@ -207,14 +216,13 @@
       padding: 24px;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
       transition: all 0.25s ease;
-      position: relative;
     }
 
     .device-card:hover {
       border-color: var(--card-border-hover);
-      box-shadow: 0 20px 45px rgba(0,0,0,0.45);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
     }
 
     /* Header của Card */
@@ -222,35 +230,56 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
+    }
+
+    .device-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .device-title {
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 900;
       color: #ffffff;
       letter-spacing: -0.01em;
     }
 
-    .device-badge {
-      font-size: 12px;
+    .custom-name-edit {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .custom-name-edit:hover {
+      color: #ffffff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .device-index-badge {
+      font-size: 11px;
       font-weight: 800;
-      padding: 5px 12px;
-      border-radius: 10px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-
-    .badge-dev1 { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.35); }
-    .badge-dev2 { background: rgba(168, 85, 247, 0.2); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.35); }
-    .badge-dev3 { background: rgba(245, 158, 11, 0.2); color: #fde68a; border: 1px solid rgba(245, 158, 11, 0.35); }
 
     /* 1. Trạng thái Nguồn (Có điện / Mất điện) */
     .power-status-box {
       background: #060b14;
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 12px 16px;
+      border-radius: 14px;
+      padding: 11px 16px;
       margin-bottom: 16px;
       display: flex;
       align-items: center;
@@ -267,9 +296,9 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      padding: 5px 12px;
+      padding: 4px 12px;
       border-radius: 8px;
     }
 
@@ -280,8 +309,8 @@
     }
 
     .power-online .pulse-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #22c55e;
       box-shadow: 0 0 10px #22c55e;
@@ -301,8 +330,8 @@
     }
 
     .power-offline .pulse-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #ef4444;
     }
@@ -313,18 +342,31 @@
       border: 1px solid rgba(148, 163, 184, 0.25);
     }
 
-    /* 2. Trạng thái Hoạt động BẬT / TẮT (Chữ cực to, dễ nhìn cho người lớn tuổi) */
+    /* 2. Trạng thái Hoạt động BẬT / TẮT */
     .state-banner {
       background: #060b14;
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      padding: 18px;
+      padding: 18px 16px;
       margin-bottom: 20px;
       text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .state-banner.banner-on {
+      background: rgba(34, 197, 94, 0.08);
+      border-color: rgba(34, 197, 94, 0.4);
+      box-shadow: 0 0 24px rgba(34, 197, 94, 0.12);
+    }
+
+    .state-banner.banner-off {
+      background: rgba(239, 68, 68, 0.06);
+      border-color: rgba(239, 68, 68, 0.3);
+      box-shadow: 0 0 24px rgba(239, 68, 68, 0.08);
     }
 
     .state-label {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       color: var(--muted);
       text-transform: uppercase;
@@ -333,26 +375,26 @@
     }
 
     .state-big-text {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 900;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
 
     .state-on {
       color: #4ade80;
-      text-shadow: 0 0 16px rgba(74, 222, 128, 0.4);
+      text-shadow: 0 0 16px rgba(74, 222, 128, 0.45);
     }
 
     .state-off {
       color: #f87171;
-      text-shadow: 0 0 16px rgba(248, 113, 113, 0.3);
+      text-shadow: 0 0 16px rgba(248, 113, 113, 0.35);
     }
 
     .state-syncing {
       color: #94a3b8;
     }
 
-    /* 3. Nút bấm BẬT / TẮT siêu to, cảm ứng cực nhạy */
+    /* 3. Nút bấm BẬT / TẮT to rõ */
     .button-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -410,7 +452,7 @@
       transform: scale(1.02);
     }
 
-    /* 4. Hẹn giờ tự động (Thiết kế to rõ, dễ hiểu) */
+    /* 4. Hẹn giờ tự động */
     .timer-section {
       border-top: 1px solid var(--card-border);
       padding-top: 18px;
@@ -445,8 +487,8 @@
 
     .timer-label {
       font-size: 14px;
-      font-weight: 750;
-      width: 90px;
+      font-weight: 800;
+      width: 78px;
       flex-shrink: 0;
     }
 
@@ -464,18 +506,20 @@
 
     .timer-input:focus {
       outline: 2px solid var(--blue);
+      border-color: transparent;
     }
 
     .btn-save-time {
       background: #2563eb;
       color: white;
       border: none;
-      padding: 9px 14px;
+      padding: 9px 15px;
       border-radius: 10px;
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       flex-shrink: 0;
+      transition: background 0.15s;
     }
 
     .btn-save-time:hover {
@@ -492,6 +536,7 @@
       font-weight: 700;
       cursor: pointer;
       flex-shrink: 0;
+      transition: all 0.15s;
     }
 
     .btn-del-time:hover {
@@ -503,7 +548,7 @@
       font-size: 12px;
       color: var(--muted);
       margin-top: 6px;
-      padding-left: 98px;
+      padding-left: 86px;
       font-weight: 600;
     }
 
@@ -552,7 +597,7 @@
       margin-top: 48px;
       text-align: center;
       padding-top: 24px;
-      border-top: 1px solid rgba(148, 163, 184, 0.15);
+      border-top: 1px solid rgba(148, 163, 184, 0.12);
       color: #64748b;
       font-size: 14px;
     }
@@ -562,7 +607,7 @@
       color: #93c5fd;
     }
   </style>
-</head>
+<script src="/_aistudio-iframe.js?v=1f94f900"></script></head>
 <body>
 
 <div class="container">
@@ -570,32 +615,41 @@
   <!-- Header -->
   <header>
     <div class="brand-tag">
-      ⭐ ThaiToan IoT System - AI Studio
+      ⭐ THIẾT BỊ ĐIỆN THÔNG MINH
     </div>
-    <h1>BẢNG ĐIỀU KHIỂN THIẾT BỊ</h1>
-    <div class="subtitle">Giám sát điều khiển thiết bị và bật tắt theo thời gian</div>
+    <h1>BẢNG ĐIỀU KHIỂN & HẸN GIỜ</h1>
+    <div class="subtitle">Giám sát hoạt động và cài đặt lịch bật tắt thiết bị tự động</div>
   </header>
 
   <!-- Thanh tóm tắt trạng thái -->
   <div class="summary-bar">
     <div class="summary-stats">
       <div class="stat-box">
-        <span class="stat-title">MCU Start:</span>
-        <span class="stat-value" id="topOnlineCount" style="color: #4ade80;">Loading...</span>
+        <div class="stat-icon" style="background: rgba(34, 197, 94, 0.15); color: #4ade80;">📶</div>
+        <div>
+          <div class="stat-title">Thiết Bị Sẵn Sàng</div>
+          <div class="stat-value" id="topOnlineCount" style="color: #4ade80;">Đang kiểm tra...</div>
+        </div>
       </div>
       <div class="stat-box">
-        <span class="stat-title">State On:</span>
-        <span class="stat-value" id="topOutputCount" style="color: #60a5fa;">Loading...</span>
+        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">⚡</div>
+        <div>
+          <div class="stat-title">Đang Bật Điện</div>
+          <div class="stat-value" id="topOutputCount" style="color: #60a5fa;">Đang kiểm tra...</div>
+        </div>
       </div>
       <div class="stat-box">
-        <span class="stat-title">Time:</span>
-        <span class="stat-value" id="topClock">--:--:--</span>
+        <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: #d8b4fe;">⏰</div>
+        <div>
+          <div class="stat-title">Đồng Hồ Hệ Thống</div>
+          <div class="stat-value" id="topClock">--:--:--</div>
+        </div>
       </div>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div>
       <button class="btn-refresh" onclick="syncAllDevices()">
-        ↻ Update
+        ↻ Cập Nhật
       </button>
     </div>
   </div>
@@ -606,191 +660,203 @@
     <!-- ================= THIẾT BỊ 1 ================= -->
     <div class="device-card">
       <div class="card-top">
-        <span class="device-title">MCU 1</span>
+        <div class="device-title-wrap">
+          <span class="device-title" id="nameLabel1">Thiết Bị 1</span>
+          <button class="custom-name-edit" onclick="renameDevice(1)" title="Đổi tên thiết bị">✏️</button>
+        </div>
+        <span class="device-index-badge">MCU 1</span>
       </div>
 
       <!-- Trạng thái nguồn -->
       <div class="power-status-box">
-        <span class="power-status-title">Power:</span>
+        <span class="power-status-title">Nguồn điện:</span>
         <span id="hwStatus1" class="power-tag power-checking">
-          <span class="pulse-dot"></span> Loading...
+          <span class="pulse-dot"></span> Đang kiểm tra...
         </span>
       </div>
 
       <!-- Trạng thái Hoạt động BẬT / TẮT -->
-      <div class="state-banner">
-        <div class="state-label">State:</div>
-        <div id="outputVal1" class="state-big-text state-syncing">Loading...</div>
+      <div class="state-banner" id="banner1">
+        <div class="state-label">Trạng thái hiện tại:</div>
+        <div id="outputVal1" class="state-big-text state-syncing">Đang tải...</div>
       </div>
 
       <!-- 2 Nút BẬT / TẮT to rõ -->
       <div class="button-row">
         <button id="btnOn1" class="btn-main btn-turn-on" onclick="sendAction(1, 'ON')">
-          <span style="font-size: 20px;">⚡</span>
-          <span>Device On</span>
+          <span style="font-size: 22px;">⚡</span>
+          <span>BẬT ĐIỆN</span>
         </button>
         <button id="btnOff1" class="btn-main btn-turn-off" onclick="sendAction(1, 'OFF')">
-          <span style="font-size: 20px;">✕</span>
-          <span>Device Off</span>
+          <span style="font-size: 22px;">✕</span>
+          <span>TẮT ĐIỆN</span>
         </button>
       </div>
 
       <!-- Hẹn giờ tự động -->
       <div class="timer-section">
-        <div class="timer-section-title">⏰ Auto </div>
+        <div class="timer-section-title">⏰ Hẹn Giờ Tự Động</div>
 
         <div class="timer-item">
           <div class="timer-control-row">
-            <span class="timer-label" style="color: #4ade80;">On :</span>
+            <span class="timer-label" style="color: #4ade80;">Bật lúc:</span>
             <input type="time" id="timeOn1" class="timer-input">
-            <button class="btn-save-time" onclick="saveTimer(1, 'ON')">Save</button>
-            <button class="btn-del-time" onclick="cancelTimer(1, 'ON')">Delete</button>
+            <button class="btn-save-time" onclick="saveTimer(1, 'ON')">Lưu</button>
+            <button class="btn-del-time" onclick="cancelTimer(1, 'ON')">Xóa</button>
           </div>
-          <div class="timer-status-text" id="badgeOn1">Not set</div>
+          <div class="timer-status-text" id="badgeOn1">Chưa đặt lịch hẹn</div>
         </div>
 
         <div class="timer-item">
           <div class="timer-control-row">
-            <span class="timer-label" style="color: #f87171;">Off:</span>
+            <span class="timer-label" style="color: #f87171;">Tắt lúc:</span>
             <input type="time" id="timeOff1" class="timer-input">
-            <button class="btn-save-time" onclick="saveTimer(1, 'OFF')">Save</button>
-            <button class="btn-del-time" onclick="cancelTimer(1, 'OFF')">Delete</button>
+            <button class="btn-save-time" onclick="saveTimer(1, 'OFF')">Lưu</button>
+            <button class="btn-del-time" onclick="cancelTimer(1, 'OFF')">Xóa</button>
           </div>
-          <div class="timer-status-text" id="badgeOff1">Not set</div>
+          <div class="timer-status-text" id="badgeOff1">Chưa đặt lịch hẹn</div>
         </div>
       </div>
 
       <!-- Footer card -->
       <div class="card-bottom">
-        <div class="status-msg" id="log1">Loading...</div>
-        <button class="btn-wifi-reset" onclick="resetWiFi(1)">Reset Wi-Fi for Device 1</button>
+        <div class="status-msg" id="log1">Đang khởi tạo...</div>
+        <button class="btn-wifi-reset" onclick="resetWiFi(1)">Cài lại Wi-Fi cho Thiết Bị 1</button>
       </div>
     </div>
 
     <!-- ================= THIẾT BỊ 2 ================= -->
     <div class="device-card">
       <div class="card-top">
-        <span class="device-title">MCU 2</span>
+        <div class="device-title-wrap">
+          <span class="device-title" id="nameLabel2">Thiết Bị 2</span>
+          <button class="custom-name-edit" onclick="renameDevice(2)" title="Đổi tên thiết bị">✏️</button>
+        </div>
+        <span class="device-index-badge">MCU 2</span>
       </div>
 
       <!-- Trạng thái nguồn -->
       <div class="power-status-box">
-        <span class="power-status-title">Power:</span>
+        <span class="power-status-title">Nguồn điện:</span>
         <span id="hwStatus2" class="power-tag power-checking">
-          <span class="pulse-dot"></span> Checking...
+          <span class="pulse-dot"></span> Đang kiểm tra...
         </span>
       </div>
 
       <!-- Trạng thái Hoạt động BẬT / TẮT -->
-      <div class="state-banner">
-        <div class="state-label">Current Status:</div>
-        <div id="outputVal2" class="state-big-text state-syncing">Loading...</div>
+      <div class="state-banner" id="banner2">
+        <div class="state-label">Trạng thái hiện tại:</div>
+        <div id="outputVal2" class="state-big-text state-syncing">Đang tải...</div>
       </div>
 
       <!-- 2 Nút BẬT / TẮT to rõ -->
       <div class="button-row">
         <button id="btnOn2" class="btn-main btn-turn-on" onclick="sendAction(2, 'ON')">
-          <span style="font-size: 20px;">⚡</span>
-          <span>Device On</span>
+          <span style="font-size: 22px;">⚡</span>
+          <span>BẬT ĐIỆN</span>
         </button>
         <button id="btnOff2" class="btn-main btn-turn-off" onclick="sendAction(2, 'OFF')">
-          <span style="font-size: 20px;">✕</span>
-          <span>Device Off</span>
+          <span style="font-size: 22px;">✕</span>
+          <span>TẮT ĐIỆN</span>
         </button>
       </div>
 
       <!-- Hẹn giờ tự động -->
       <div class="timer-section">
-        <div class="timer-section-title" style="color: #d8b4fe;">⏰ Auto</div>
+        <div class="timer-section-title">⏰ Hẹn Giờ Tự Động</div>
 
         <div class="timer-item">
           <div class="timer-control-row">
-            <span class="timer-label" style="color: #4ade80;">On :</span>
+            <span class="timer-label" style="color: #4ade80;">Bật lúc:</span>
             <input type="time" id="timeOn2" class="timer-input">
-            <button class="btn-save-time" onclick="saveTimer(2, 'ON')">Save</button>
-            <button class="btn-del-time" onclick="cancelTimer(2, 'ON')">Delete</button>
+            <button class="btn-save-time" onclick="saveTimer(2, 'ON')">Lưu</button>
+            <button class="btn-del-time" onclick="cancelTimer(2, 'ON')">Xóa</button>
           </div>
-          <div class="timer-status-text" id="badgeOn2">Not set</div>
+          <div class="timer-status-text" id="badgeOn2">Chưa đặt lịch hẹn</div>
         </div>
 
         <div class="timer-item">
           <div class="timer-control-row">
-            <span class="timer-label" style="color: #f87171;">Off :</span>
+            <span class="timer-label" style="color: #f87171;">Tắt lúc:</span>
             <input type="time" id="timeOff2" class="timer-input">
-            <button class="btn-save-time" onclick="saveTimer(2, 'OFF')">Save</button>
-            <button class="btn-del-time" onclick="cancelTimer(2, 'OFF')">Delete</button>
+            <button class="btn-save-time" onclick="saveTimer(2, 'OFF')">Lưu</button>
+            <button class="btn-del-time" onclick="cancelTimer(2, 'OFF')">Xóa</button>
           </div>
-          <div class="timer-status-text" id="badgeOff2">Not set</div>
+          <div class="timer-status-text" id="badgeOff2">Chưa đặt lịch hẹn</div>
         </div>
       </div>
 
       <!-- Footer card -->
       <div class="card-bottom">
-        <div class="status-msg" id="log2">Loading...</div>
-        <button class="btn-wifi-reset" onclick="resetWiFi(2)">Reset Wi-Fi for Device 2</button>
+        <div class="status-msg" id="log2">Đang khởi tạo...</div>
+        <button class="btn-wifi-reset" onclick="resetWiFi(2)">Cài lại Wi-Fi cho Thiết Bị 2</button>
       </div>
     </div>
 
     <!-- ================= THIẾT BỊ 3 ================= -->
     <div class="device-card">
       <div class="card-top">
-        <span class="device-title">MCU 3</span>
+        <div class="device-title-wrap">
+          <span class="device-title" id="nameLabel3">Thiết Bị 3</span>
+          <button class="custom-name-edit" onclick="renameDevice(3)" title="Đổi tên thiết bị">✏️</button>
+        </div>
+        <span class="device-index-badge">MCU 3</span>
       </div>
 
       <!-- Trạng thái nguồn -->
       <div class="power-status-box">
-        <span class="power-status-title">Power:</span>
+        <span class="power-status-title">Nguồn điện:</span>
         <span id="hwStatus3" class="power-tag power-checking">
-          <span class="pulse-dot"></span> Loading...
+          <span class="pulse-dot"></span> Đang kiểm tra...
         </span>
       </div>
 
       <!-- Trạng thái Hoạt động BẬT / TẮT -->
-      <div class="state-banner">
-        <div class="state-label">State:</div>
-        <div id="outputVal3" class="state-big-text state-syncing">Loading...</div>
+      <div class="state-banner" id="banner3">
+        <div class="state-label">Trạng thái hiện tại:</div>
+        <div id="outputVal3" class="state-big-text state-syncing">Đang tải...</div>
       </div>
 
       <!-- 2 Nút BẬT / TẮT to rõ -->
       <div class="button-row">
         <button id="btnOn3" class="btn-main btn-turn-on" onclick="sendAction(3, 'ON')">
-          <span style="font-size: 20px;">⚡</span>
-          <span>On</span>
+          <span style="font-size: 22px;">⚡</span>
+          <span>BẬT ĐIỆN</span>
         </button>
         <button id="btnOff3" class="btn-main btn-turn-off" onclick="sendAction(3, 'OFF')">
-          <span style="font-size: 20px;">✕</span>
-          <span>Off</span>
+          <span style="font-size: 22px;">✕</span>
+          <span>TẮT ĐIỆN</span>
         </button>
       </div>
 
       <!-- Hẹn giờ tự động -->
       <div class="timer-section">
-        <div class="timer-section-title" style="color: #fde68a;">⏰ Auto</div>
+        <div class="timer-section-title">⏰ Hẹn Giờ Tự Động</div>
 
         <div class="timer-item">
           <div class="timer-control-row">
-            <span class="timer-label" style="color: #4ade80;">On:</span>
+            <span class="timer-label" style="color: #4ade80;">Bật lúc:</span>
             <input type="time" id="timeOn3" class="timer-input">
-            <button class="btn-save-time" onclick="saveTimer(3, 'ON')">Save</button>
-            <button class="btn-del-time" onclick="cancelTimer(3, 'ON')">Delete</button>
+            <button class="btn-save-time" onclick="saveTimer(3, 'ON')">Lưu</button>
+            <button class="btn-del-time" onclick="cancelTimer(3, 'ON')">Xóa</button>
           </div>
-          <div class="timer-status-text" id="badgeOn3">No Data</div>
+          <div class="timer-status-text" id="badgeOn3">Chưa đặt lịch hẹn</div>
         </div>
 
         <div class="timer-item">
           <div class="timer-control-row">
-            <span class="timer-label" style="color: #f87171;">Off:</span>
+            <span class="timer-label" style="color: #f87171;">Tắt lúc:</span>
             <input type="time" id="timeOff3" class="timer-input">
-            <button class="btn-save-time" onclick="saveTimer(3, 'OFF')">Save</button>
-            <button class="btn-del-time" onclick="cancelTimer(3, 'OFF')">Delete</button>
+            <button class="btn-save-time" onclick="saveTimer(3, 'OFF')">Lưu</button>
+            <button class="btn-del-time" onclick="cancelTimer(3, 'OFF')">Xóa</button>
           </div>
-          <div class="timer-status-text" id="badgeOff3">No Data</div>
+          <div class="timer-status-text" id="badgeOff3">Chưa đặt lịch hẹn</div>
         </div>
       </div>
 
       <!-- Footer card -->
       <div class="card-bottom">
-        <div class="status-msg" id="log3">Đang khởi động kết nối...</div>
+        <div class="status-msg" id="log3">Đang khởi tạo...</div>
         <button class="btn-wifi-reset" onclick="resetWiFi(3)">Cài lại Wi-Fi cho Thiết Bị 3</button>
       </div>
     </div>
@@ -799,29 +865,37 @@
 
   <!-- Site Footer -->
   <footer>
-    Hệ thống phát triển bởi: <span class="source-text">ThaiToan IoT System - AI Studio</span> · Tự động đồng bộ chuẩn xác
+    Hệ thống điều khiển thiết bị thông minh · Bàn giao khách hàng
   </footer>
 
 </div>
 
 <!-- Logic JavaScript -->
 <script>
-  // Cấu hình chuẩn Blynk IoT: V0 = 1 là ON, V0 = 0 là OFF
+  // Cấu hình thiết bị:
+  // MCU 1 & MCU 3: inverted = true (ON gửi 0, OFF gửi 1; đọc 0 là ON, đọc 1 là OFF)
+  // MCU 2: inverted = false (ON gửi 1, OFF gửi 0; đọc 1 là ON, đọc 0 là OFF)
   const DEVICES = {
     1: {
+      defaultName: "Thiết Bị 1",
       token: "YQ2mDr3RdvQTWXD-jaNE1wA4yqYW4FnT",
       timerOnH: "V3", timerOnM: "V4",
-      timerOffH: "V1", timerOffM: "V2"
+      timerOffH: "V1", timerOffM: "V2",
+      inverted: true
     },
     2: {
+      defaultName: "Thiết Bị 2",
       token: "E50JTvY4mWn13adJTb3MulWZ_v3CC9pu",
       timerOnH: "V1", timerOnM: "V2",
-      timerOffH: "V3", timerOffM: "V4"
+      timerOffH: "V3", timerOffM: "V4",
+      inverted: false
     },
     3: {
+      defaultName: "Thiết Bị 3",
       token: "iDWMhTnPM6RJ7MSExwr6kCzNROPoOwUD",
       timerOnH: "V3", timerOnM: "V4",
-      timerOffH: "V1", timerOffM: "V2"
+      timerOffH: "V1", timerOffM: "V2",
+      inverted: true
     }
   };
 
@@ -832,6 +906,25 @@
     2: { online: null, output: null },
     3: { online: null, output: null }
   };
+
+  // Tùy chỉnh tên thiết bị cho khách hàng
+  function loadDeviceNames() {
+    for (let id = 1; id <= 3; id++) {
+      const saved = localStorage.getItem("thaitoan_dev_name_" + id);
+      const name = saved || DEVICES[id].defaultName;
+      const el = document.getElementById("nameLabel" + id);
+      if (el) el.textContent = name;
+    }
+  }
+
+  function renameDevice(id) {
+    const cur = document.getElementById("nameLabel" + id).textContent;
+    const newName = prompt("Nhập tên gọi mới cho thiết bị này:", cur);
+    if (newName && newName.trim()) {
+      localStorage.setItem("thaitoan_dev_name_" + id, newName.trim());
+      document.getElementById("nameLabel" + id).textContent = newName.trim();
+    }
+  }
 
   // Đồng hồ chạy thời gian thực
   function updateClock() {
@@ -865,10 +958,11 @@
     }
   }
 
-  // 2. Cập nhật Trạng thái Hoạt động BẬT / TẮT (V0 = 1 là BẬT, 0 là TẮT)
+  // 2. Cập nhật Trạng thái Hoạt động BẬT / TẮT
   function updateOutputUI(devId, isOutputOn) {
     deviceState[devId].output = isOutputOn;
     const statusEl = document.getElementById("outputVal" + devId);
+    const bannerEl = document.getElementById("banner" + devId);
     const btnOn = document.getElementById("btnOn" + devId);
     const btnOff = document.getElementById("btnOff" + devId);
 
@@ -877,12 +971,18 @@
         statusEl.textContent = "● ĐANG BẬT";
         statusEl.className = "state-big-text state-on";
       }
+      if (bannerEl) {
+        bannerEl.className = "state-banner banner-on";
+      }
       if (btnOn) btnOn.classList.add("active");
       if (btnOff) btnOff.classList.remove("active");
     } else if (isOutputOn === false) {
       if (statusEl) {
         statusEl.textContent = "○ ĐANG TẮT";
         statusEl.className = "state-big-text state-off";
+      }
+      if (bannerEl) {
+        bannerEl.className = "state-banner banner-off";
       }
       if (btnOn) btnOn.classList.remove("active");
       if (btnOff) btnOff.classList.add("active");
@@ -911,8 +1011,8 @@
     const onlineEl = document.getElementById("topOnlineCount");
     const outputEl = document.getElementById("topOutputCount");
 
-    if (onlineEl) onlineEl.textContent = onlineCount + " / 3 thiết bị";
-    if (outputEl) outputEl.textContent = outputCount + " / 3 thiết bị";
+    if (onlineEl) onlineEl.textContent = onlineCount + " / 3";
+    if (outputEl) outputEl.textContent = outputCount + " / 3";
   }
 
   function sendCommand(token, query, onDone) {
@@ -928,7 +1028,21 @@
       });
   }
 
-  // TỰ ĐỘNG ĐỒNG BỘ 3 THIẾT BỊ NGAY KHI VÀO WEB
+  // Ghi đồng thời Giờ & Phút bằng batch/update để không bị làm tròn hay mất phút
+  function sendBatchCommand(token, query, onDone) {
+    const url = BASE_URL + "/batch/update?token=" + token + "&" + query + "&_t=" + Date.now();
+    fetch(url)
+      .then(function() { if (onDone) onDone(); })
+      .catch(function() {
+        const img = new Image();
+        img.onload = img.onerror = function() {
+          if (onDone) onDone();
+        };
+        img.src = url;
+      });
+  }
+
+  // TỰ ĐỘNG ĐỒNG BỘ 3 THIẾT BỊ
   async function syncAllDevices() {
     if (isSyncing) return;
     isSyncing = true;
@@ -950,18 +1064,20 @@
         if (pinsRes && typeof pinsRes === 'object') {
           const v0Val = parseBlynkValue(pinsRes['V0']);
           if (v0Val !== null) {
-            // Chuẩn Blynk: 1 = ON, 0 = OFF
-            const isOutputOn = (v0Val === 1);
+            // MCU 1 & 3: 0 là BẬT, 1 là TẮT; MCU 2: 1 là BẬT, 0 là TẮT
+            const isOutputOn = conf.inverted ? (v0Val === 0) : (v0Val === 1);
             updateOutputUI(devId, isOutputOn);
           }
 
           // Giờ Bật
           const onH = parseBlynkValue(pinsRes[conf.timerOnH]);
           const onM = parseBlynkValue(pinsRes[conf.timerOnM]);
+          const inputOn = document.getElementById("timeOn" + devId);
           if (onH !== null && onM !== null && onH >= 0 && onH <= 23 && onM >= 0 && onM <= 59) {
             const str = String(onH).padStart(2, '0') + ":" + String(onM).padStart(2, '0');
-            const el = document.getElementById("timeOn" + devId);
-            if (el) el.value = str;
+            if (inputOn && document.activeElement !== inputOn) {
+              inputOn.value = str;
+            }
             updateTimerBadge(devId, 'On', str);
           } else if (onH === -1 || onM === -1) {
             updateTimerBadge(devId, 'On', null);
@@ -970,10 +1086,12 @@
           // Giờ Tắt
           const offH = parseBlynkValue(pinsRes[conf.timerOffH]);
           const offM = parseBlynkValue(pinsRes[conf.timerOffM]);
+          const inputOff = document.getElementById("timeOff" + devId);
           if (offH !== null && offM !== null && offH >= 0 && offH <= 23 && offM >= 0 && offM <= 59) {
             const str = String(offH).padStart(2, '0') + ":" + String(offM).padStart(2, '0');
-            const el = document.getElementById("timeOff" + devId);
-            if (el) el.value = str;
+            if (inputOff && document.activeElement !== inputOff) {
+              inputOff.value = str;
+            }
             updateTimerBadge(devId, 'Off', str);
           } else if (offH === -1 || offM === -1) {
             updateTimerBadge(devId, 'Off', null);
@@ -981,8 +1099,8 @@
         }
 
         const logEl = document.getElementById("log" + devId);
-        if (logEl) {
-          logEl.textContent = isOnline ? "Thiết bị đang hoạt động bình thường" : "Thiết bị đang mất điện hoặc mất mạng";
+        if (logEl && !logEl.textContent.startsWith("✓")) {
+          logEl.textContent = isOnline ? "Hoạt động bình thường" : "Mất kết nối";
         }
       } catch (e) {
         console.warn("Lỗi đồng bộ thiết bị " + devId, e);
@@ -997,13 +1115,16 @@
     const conf = DEVICES[devId];
     const logEl = document.getElementById("log" + devId);
     const isTurnOn = (action === 'ON');
-    const valToSend = isTurnOn ? 1 : 0;
 
-    if (logEl) logEl.textContent = isTurnOn ? "Đang bật thiết bị..." : "Đang tắt thiết bị...";
+    // MCU 1 & 3: BẬT gửi 0, TẮT gửi 1
+    // MCU 2: BẬT gửi 1, TẮT gửi 0
+    const valToSend = conf.inverted ? (isTurnOn ? 0 : 1) : (isTurnOn ? 1 : 0);
+
+    if (logEl) logEl.textContent = isTurnOn ? "Đang gửi lệnh BẬT..." : "Đang gửi lệnh TẮT...";
     updateOutputUI(devId, isTurnOn);
 
     sendCommand(conf.token, "V0=" + valToSend, function() {
-      if (logEl) logEl.textContent = isTurnOn ? "✓ Đã BẬT thiết bị thành công" : "✓ Đã TẮT thiết bị thành công";
+      if (logEl) logEl.textContent = isTurnOn ? "✓ Đã BẬT thành công" : "✓ Đã TẮT thành công";
       setTimeout(syncAllDevices, 400);
     });
   }
@@ -1016,7 +1137,7 @@
     const val = inputEl ? inputEl.value : "";
 
     if (!val) {
-      alert("Bác vui lòng chọn giờ trước khi bấm Lưu ạ!");
+      alert("Vui lòng chọn giờ trước khi bấm Lưu!");
       return;
     }
 
@@ -1024,14 +1145,21 @@
     const h = parseInt(parts[0], 10);
     const m = parseInt(parts[1], 10);
 
+    if (isNaN(h) || isNaN(m) || h < 0 || h > 23 || m < 0 || m > 59) {
+      alert("Thời gian không hợp lệ, vui lòng kiểm tra lại!");
+      return;
+    }
+
     const hPin = (type === 'ON') ? conf.timerOnH : conf.timerOffH;
     const mPin = (type === 'ON') ? conf.timerOnM : conf.timerOffM;
 
     if (logEl) logEl.textContent = "Đang lưu lịch hẹn...";
     updateTimerBadge(devId, typeCapital, val);
 
-    sendCommand(conf.token, hPin + "=" + h + "&" + mPin + "=" + m, function() {
-      if (logEl) logEl.textContent = "✓ Đã đặt hẹn giờ " + (type === 'ON' ? 'bật' : 'tắt') + " lúc " + val;
+    // Dùng batch update để lưu chính xác cả Giờ và Phút
+    sendBatchCommand(conf.token, hPin + "=" + h + "&" + mPin + "=" + m, function() {
+      if (logEl) logEl.textContent = "✓ Đã lưu lịch hẹn " + (type === 'ON' ? 'BẬT' : 'TẮT') + " lúc " + val;
+      setTimeout(syncAllDevices, 400);
     });
   }
 
@@ -1047,27 +1175,30 @@
     const hPin = (type === 'ON') ? conf.timerOnH : conf.timerOffH;
     const mPin = (type === 'ON') ? conf.timerOnM : conf.timerOffM;
 
-    if (logEl) logEl.textContent = "Đang xóa hẹn giờ...";
-    sendCommand(conf.token, hPin + "=-1&" + mPin + "=-1", function() {
-      if (logEl) logEl.textContent = "✓ Đã xóa hẹn giờ " + (type === 'ON' ? 'bật' : 'tắt');
+    if (logEl) logEl.textContent = "Đang xóa lịch hẹn...";
+    sendBatchCommand(conf.token, hPin + "=-1&" + mPin + "=-1", function() {
+      if (logEl) logEl.textContent = "✓ Đã xóa lịch hẹn " + (type === 'ON' ? 'BẬT' : 'TẮT');
+      setTimeout(syncAllDevices, 400);
     });
   }
 
   function resetWiFi(devId) {
+    const devName = document.getElementById("nameLabel" + devId).textContent || ("Thiết Bị " + devId);
     const apName = "CaiDat_ESP" + devId;
-    const conf = confirm("Xác nhận cài lại Wi-Fi cho Thiết Bị " + devId + "?\n\nThiết bị sẽ phát ra mạng Wi-Fi tên \"" + apName + "\" để kết nối cài đặt lại mạng mới.");
+    const conf = confirm("Cài đặt lại Wi-Fi cho " + devName + "?\n\nThiết bị sẽ phát mạng Wi-Fi tên \"" + apName + "\" để kết nối cài đặt lại mạng mới.");
     if (conf) {
       const logEl = document.getElementById("log" + devId);
       if (logEl) logEl.textContent = "Đang gửi lệnh cài lại Wi-Fi...";
       sendCommand(DEVICES[devId].token, "V5=1", function() {
-        if (logEl) logEl.textContent = "Đã gửi lệnh. Hãy tìm Wi-Fi \"" + apName + "\" để cài đặt.";
-        alert("Đã gửi lệnh thành công! Bác mở phần cài đặt Wi-Fi trên điện thoại, tìm mạng \"" + apName + "\" để cài đặt lại mạng nhé.");
+        if (logEl) logEl.textContent = "Đã gửi lệnh cài lại Wi-Fi.";
+        alert("Đã gửi lệnh thành công! Bạn hãy mở cài đặt Wi-Fi trên điện thoại, tìm mạng \"" + apName + "\" để kết nối cài lại mạng nhé.");
       });
     }
   }
 
   // TỰ ĐỘNG CHẠY NGAY KHI VÀO TRANG
   window.addEventListener("DOMContentLoaded", async function() {
+    loadDeviceNames();
     await syncAllDevices();
     setInterval(syncAllDevices, 2000);
   });
